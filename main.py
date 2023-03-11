@@ -9,8 +9,9 @@ while(cap.isOpened()):
     if ret == False:
         break
     cv2.imwrite('faces/face'+str(i)+".jpg", frame)
-
     i+=1
+    # if i == 3:
+    #     break
 
 cap.release()
 cv2.destroyAllWindows()
