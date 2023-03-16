@@ -2,12 +2,9 @@ import face_recognition
 import docopt
 from sklearn import svm
 import os
+import joblib
   
-def face_recognize(dir, test):
-    # Training the SVC classifier
-    # The training data would be all the 
-    # face encodings from all the known 
-    # images and the labels are their names
+def train_faces(dir):
     encodings = []
     names = []
   
@@ -40,8 +37,9 @@ def face_recognize(dir, test):
     # Create and train the SVC classifier
     clf = svm.SVC(gamma ='scale')
     clf.fit(encodings, names)
+    joblib.dump(clf, "face_model.pkl")
   
-    # Load the test image with unknown faces into a numpy array
+def recognize(test):
     test_image = face_recognition.load_image_file(test)
   
     # Find all the faces in the test image using the default HOG-based model
@@ -51,16 +49,17 @@ def face_recognize(dir, test):
   
     # Predict all the faces in the test image using the trained classifier
     print("Found:")
+    clf=joblib.load("face_model.pkl")
     for i in range(no):
         test_image_enc = face_recognition.face_encodings(test_image)[i]
         name = clf.predict([test_image_enc])
         print(*name)
   
 def main():
-    args = docopt.docopt(__doc__)
-    train_dir = args["--train_dir"]
-    test_image = args["--test_image"]
-    face_recognize(train_dir, test_image)
+    train_dir ='faces'
+    test_image='face2.jpg'
+    train_faces(train_dir)
+    recognize(test_image)
   
 if __name__=="__main__":
     main()

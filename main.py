@@ -35,20 +35,23 @@ def crop_faces(filename, cropped_filename):
         cv2.imwrite(cropped_filename, faces)
         
 def capture_faces():
+    i=0
     while(cap.isOpened()):
         ret, frame = cap.read()
         if ret == False:
             break
-        cv2.imwrite('faces/face'+str(i)+".jpg", frame)
+        # cv2.imwrite('faces/face'+str(i)+".jpg", frame)
+        cv2.imwrite('face'+str(i)+".jpg", frame)
         i+=1
-    # if i == 3:
-    #     break
+        if i == 3:
+            break
 
     cap.release()
     cv2.destroyAllWindows()
 
-directory = 'faces/santhosh'
-for filename in os.listdir(directory):
-    i+=1
-    if filename.endswith('.jpg'):
-        crop_faces(os.path.join(directory, filename), 'cropped_faces/Santhosh/face'+str(i)+'.jpg')
+# directory = 'faces/santhosh'
+# for filename in os.listdir(directory):
+#     i+=1
+#     if filename.endswith('.jpg'):
+#         crop_faces(os.path.join(directory, filename), 'cropped_faces/Santhosh/face'+str(i)+'.jpg')
+capture_faces()
