@@ -1,6 +1,7 @@
 import face_recognition
 import docopt
 from sklearn import svm
+import numpy as np
 import os
 import joblib
   
@@ -35,10 +36,11 @@ def train_faces(dir):
                 print(person + "/" + person_img + " can't be used for training")
   
     # Create and train the SVC classifier
-    clf = svm.SVC(gamma ='scale')
+    clf = svm.SVC(gamma ='scale', probability=True)
     clf.fit(encodings, names)
     joblib.dump(clf, "face_model.pkl")
-  
+    joblib.dump(encodings, "encoding.pkl")
+
 def recognize(test):
     test_image = face_recognition.load_image_file(test)
   
@@ -50,15 +52,23 @@ def recognize(test):
     # Predict all the faces in the test image using the trained classifier
     print("Found:")
     clf=joblib.load("face_model.pkl")
+    enc=joblib.load("encoding.pkl")
     for i in range(no):
         test_image_enc = face_recognition.face_encodings(test_image)[i]
+        matches = face_recognition.compare_faces(enc, test_image_enc)
+        faceDis = face_recognition.face_distance(enc, test_image_enc)
+        print("matches",matches)
+        print("faceDis",faceDis)
+        print(matches[np.argmin(faceDis)])
         name = clf.predict([test_image_enc])
+        score = clf.predict_proba([test_image_enc])
         print(*name)
+        print(score)
   
 def main():
     train_dir ='faces'
     test_image='face2.jpg'
-    train_faces(train_dir)
+    # train_faces(train_dir)
     recognize(test_image)
   
 if __name__=="__main__":
