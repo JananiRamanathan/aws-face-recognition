@@ -38,8 +38,8 @@ def train_faces(dir):
     # Create and train the SVC classifier
     clf = svm.SVC(gamma ='scale', probability=True)
     clf.fit(encodings, names)
-    joblib.dump(clf, "face_model.pkl")
-    joblib.dump(encodings, "encoding.pkl")
+    joblib.dump(clf, "face_model-sudan.pkl")
+    joblib.dump(encodings, "encoding-sudan.pkl")
 
 def recognize(test):
     test_image = face_recognition.load_image_file(test)
@@ -51,8 +51,8 @@ def recognize(test):
   
     # Predict all the faces in the test image using the trained classifier
     print("Found:")
-    clf=joblib.load("face_model.pkl")
-    enc=joblib.load("encoding.pkl")
+    clf=joblib.load("face_model-sudan.pkl")
+    enc=joblib.load("encoding-sudan.pkl")
     for i in range(no):
         test_image_enc = face_recognition.face_encodings(test_image)[i]
         matches = face_recognition.compare_faces(enc, test_image_enc, tolerance=0.5)
@@ -69,7 +69,7 @@ def recognize(test):
   
 def main():
     train_dir ='faces'
-    test_images=['face2.jpg', 'face-2.jpg', 'face-3.jpg']
+    test_images=['face2.jpg', 'face-2.jpg', 'face-3.jpg', 'jackie-chan-addresses-concerns-quarantined-coronavirus.jpg', 'sudhan-b.jpg']
     # train_faces(train_dir)
     for img in test_images:
         recognize(img)
