@@ -55,21 +55,24 @@ def recognize(test):
     enc=joblib.load("encoding.pkl")
     for i in range(no):
         test_image_enc = face_recognition.face_encodings(test_image)[i]
-        matches = face_recognition.compare_faces(enc, test_image_enc)
+        matches = face_recognition.compare_faces(enc, test_image_enc, tolerance=0.5)
         faceDis = face_recognition.face_distance(enc, test_image_enc)
         print("matches",matches)
         print("faceDis",faceDis)
-        print(matches[np.argmin(faceDis)])
-        name = clf.predict([test_image_enc])
-        score = clf.predict_proba([test_image_enc])
-        print(*name)
-        print(score)
+        if matches[np.argmin(faceDis)]:
+            name = clf.predict([test_image_enc])
+            score = clf.predict_proba([test_image_enc])
+            print(*name)
+            print(score)
+        else:
+            print("Unable to recognize face")
   
 def main():
     train_dir ='faces'
-    test_image='face2.jpg'
+    test_images=['face2.jpg', 'face-2.jpg', 'face-3.jpg']
     # train_faces(train_dir)
-    recognize(test_image)
+    for img in test_images:
+        recognize(img)
   
 if __name__=="__main__":
     main()
