@@ -40,24 +40,24 @@ def recognize_faces():
 
 @app.route("/train_faces", methods=['POST'])
 def train_faces():
- if valid_file_request(request):
-  file = request.files['file']
-  filename = secure_filename(file.filename)
-  file_contents = file.read()
+  if valid_file_request(request):
+    file = request.files['file']
+    filename = secure_filename(file.filename)
+    file_contents = file.read()
 
-  if os.path.exists(f'data/train_faces/{filename.split(".")[0]}'):
-    return f"Username already exists", 409
+    if os.path.exists(f'data/train_faces/{filename.split(".")[0]}'):
+      return f"Username already exists", 409
+    else:
+      os.mkdir(f'data/train_faces/{filename.split(".")[0]}')
+
+    for i in range(30):
+      with open(f'data/train_faces/{filename.split(".")[0]}/face_{i}.jpg', 'wb') as f:
+        f.write(file_contents)
+
+    face.train_faces(f'data/train_faces/{filename.split(".")[0]}')
+    return "Training Completed", 200
   else:
-    os.mkdir(f'data/train_faces/{filename.split(".")[0]}')
-
-  for i in range(30):
-    with open(f'data/train_faces/{filename.split(".")[0]}/face_{i}.jpg', 'wb') as f:
-      f.write(file_contents)
-
-  face.train_faces(f'data/train_faces/{filename.split(".")[0]}')
-  return "Training Completed", 200
- else:
-  return f"Invalid file. Only allowed files {ALLOWED_EXTENSIONS}", 400
+    return f"Invalid file. Only allowed files {ALLOWED_EXTENSIONS}", 400
 
 
 if __name__ == '__main__':
