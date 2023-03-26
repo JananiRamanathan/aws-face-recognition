@@ -45,11 +45,10 @@ def train_faces():
   filename = secure_filename(file.filename)
   file_contents = file.read()
 
-  # if os.path.exists(f'data/train_faces/{filename.split(".")[0]}'):
-  #   return f"Username already exists", 409
-  # else:
-  #   os.mkdir(f'data/train_faces/{filename.split(".")[0]}')
-  os.mkdir(f'data/train_faces/{filename.split(".")[0]}')
+  if os.path.exists(f'data/train_faces/{filename.split(".")[0]}'):
+    return f"Username already exists", 409
+  else:
+    os.mkdir(f'data/train_faces/{filename.split(".")[0]}')
 
   for i in range(30):
     with open(f'data/train_faces/{filename.split(".")[0]}/face_{i}.jpg', 'wb') as f:
